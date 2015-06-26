@@ -25,7 +25,6 @@ var async     = require('async');
 var csv       = require('node-csv');
 var Stream    = require('stream');
 var humanize  = require('humanize');
-var microtime = require('microtime');
 var Sifter    = require('../lib/sifter');
 var highlight = function(obj) { return cardinal.highlight(JSON.stringify(obj), {json: true}); };
 
@@ -107,14 +106,13 @@ var step_sift = function(callback) {
 		direction: argv.direction
 	}];
 
-	t_start = microtime.now();
+	t_start = Date.now();
 	result = sifter.search(argv.query, {
 		fields : argv.fields.split(','),
 		limit  : argv.limit,
 		sort   : sort
 	});
-
-	t_end = microtime.now();
+	t_end = Date.now();
 	callback();
 };
 
@@ -130,7 +128,7 @@ var step_output = function(callback) {
 	console.log('fields = ' + result.options.fields.join(', '));
 	console.log('total results = ' + humanize.numberFormat(result.total, 0));
 	console.log('total searched = ' + humanize.numberFormat(data.length, 0));
-	console.log('search time = ' + humanize.numberFormat((t_end - t_start) / 1000) + 'ms');
+	console.log('search time = ' + humanize.numberFormat(t_end - t_start, 0) + 'ms');
 	console.log('');
 
 	for (i = 0, n = result.items.length; i < n; i++) {
